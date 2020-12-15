@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"errors"
+	"github.com/jinzhu/gorm"
+	"time"
+)
 
 type Room struct {
 	ID           uint        `gorm:"primary_key;auto_increment" json:"id"`
@@ -11,4 +15,43 @@ type Room struct {
 	CreatedAt    time.Time   `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt    time.Time   `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt    *time.Time  `gorm:"default:NULL" json:"-"`
+}
+
+func (r *Room) Prepare() {
+	r.CreatedAt = time.Now()
+	r.UpdatedAt = time.Now()
+}
+
+func (r *Room) Validate() map[string]string {
+
+	var err error
+
+	var errorMessages = make(map[string]string)
+
+	if r.RoomName == "" {
+		err = errors.New("Required Name")
+		errorMessages["Required_Name"] = err.Error()
+	}
+
+	if r.RoomName != "" && len(r.RoomName) < 3 {
+		err = errors.New("should be at least 3 characters")
+		errorMessages["Invalid_Roomname"] = err.Error()
+	}
+
+	if r.RoomCapacity == "" {
+		err = errors.New("Required Room Capacity")
+		errorMessages["Required_Room_Capacity"] = err.Error()
+
+	}
+	return errorMessages
+}
+
+func (r *Room) CreateRoom(db *gorm.DB) (*Room, error) {
+	var err error
+	err = db.Debug().Model(&Room{}).Create(&r).Error
+	if err != nil {
+		return &Room{}, err
+	}
+
+	return r, nil
 }

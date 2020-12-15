@@ -14,6 +14,8 @@ func (server *Server) initializeRoutes() {
 
 		v1.POST("/register", server.CreateUser)
 		v1.POST("/login", server.Login)
+
+		v1.POST("/create-room", server.CreateRoom)
 		//v1.POST("/cloud-storage-bucket", gcsbucket.HandleFileUploadToBucket)
 	}
 }
