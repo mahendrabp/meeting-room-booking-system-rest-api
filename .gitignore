@@ -5,3 +5,4 @@ docker-compose*
 meeting-room-booking-system-rest-api # Dont push the local binary
 .DS_Store
 .idea
+tmp

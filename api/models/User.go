@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"github.com/badoux/checkmail"
 	"github.com/jinzhu/gorm"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
 	"html"
@@ -34,6 +35,55 @@ func (u *User) Prepare() {
 	u.Role = "guest"
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
+}
+
+func (u *User) Validate(action string) map[string]string {
+	var errorMessages = make(map[string]string)
+	var err error
+
+	switch strings.ToLower(action) {
+
+	case "register":
+		if u.Email == "" {
+			err = errors.New("Required Email")
+			errorMessages["Required_email"] = err.Error()
+		}
+		if u.Email != "" {
+			if err = checkmail.ValidateFormat(u.Email); err != nil {
+				err = errors.New("Email not valid")
+				errorMessages["Invalid_email"] = err.Error()
+			}
+		}
+		if u.Password == "" {
+			err = errors.New("Required Password")
+			errorMessages["Required_password"] = err.Error()
+		}
+		if u.Password != "" && len(u.Password) < 6 {
+			err = errors.New("Password should be atleast 6 characters")
+			errorMessages["Invalid_password"] = err.Error()
+		}
+	default:
+		if u.Email == "" {
+			err = errors.New("Required Email")
+			errorMessages["Required_email"] = err.Error()
+
+		}
+		if u.Email != "" {
+			if err = checkmail.ValidateFormat(u.Email); err != nil {
+				err = errors.New("Email not valid")
+				errorMessages["Invalid_email"] = err.Error()
+			}
+		}
+		if u.Password == "" {
+			err = errors.New("Required Password")
+			errorMessages["Required_password"] = err.Error()
+		}
+		if u.Password != "" && len(u.Password) < 6 {
+			err = errors.New("Password should be atleast 6 characters")
+			errorMessages["Invalid_password"] = err.Error()
+		}
+	}
+	return errorMessages
 }
 
 func (u *User) SaveUser(db *gorm.DB) (*User, error) {

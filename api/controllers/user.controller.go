@@ -37,6 +37,17 @@ func (server *Server) CreateUser(c *gin.Context) {
 	}
 
 	user.Prepare()
+
+	errorMessages := user.Validate("register")
+	if len(errorMessages) > 0 {
+		errList = errorMessages
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  errList,
+		})
+		return
+	}
+
 	userCreated, err := user.SaveUser(server.DB)
 	if err != nil {
 		formattedError := helpers.FormatError(err.Error())
