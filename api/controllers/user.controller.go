@@ -2,13 +2,10 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/gcsbucket"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/models"
-	//"encoding/json"
-	//"fmt"
-	"github.com/gin-gonic/gin"
-	//"io/ioutil"
 	"net/http"
 )
 
