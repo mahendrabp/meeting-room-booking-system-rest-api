@@ -43,7 +43,7 @@ func (u *User) Validate(action string) map[string]string {
 
 	switch strings.ToLower(action) {
 
-	case "register":
+	case "login":
 		if u.Email == "" {
 			err = errors.New("Required Email")
 			errorMessages["Required_email"] = err.Error()
