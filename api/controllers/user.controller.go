@@ -2,50 +2,36 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/gcsbucket"
+	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
+	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/models"
 	//"encoding/json"
 	//"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
-	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/models"
 	//"io/ioutil"
 	"net/http"
 )
 
 func (server *Server) CreateUser(c *gin.Context) {
-
 	errList = map[string]string{}
 
-	//body, err := ioutil.ReadAll(c.Request.Body)
-	//fmt.Println(body, err, "ini raw")
-	//if err != nil {
-	//	errList["Invalid_body"] = "Unable to get request"
-	//	c.JSON(http.StatusUnprocessableEntity, gin.H{
-	//		"status": http.StatusUnprocessableEntity,
-	//		"error":  errList,
-	//	})
-	//	return
-	//}
+	path, err := gcsbucket.HandleFileUploadToBucket(c)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  err,
+		})
+		return
+	}
+
+	fmt.Println(path)
 
 	user := models.User{}
-
-	//err = json.Unmarshal(body, &user)
-	//if err != nil {
-	//	errList["Unmarshal_error"] = "Cannot unmarshal body"
-	//	c.JSON(http.StatusUnprocessableEntity, gin.H{
-	//		"status": http.StatusUnprocessableEntity,
-	//		"error":  errList,
-	//	})
-	//	return
-	//}
-
 	user.Email = c.PostForm("email")
 	user.Password = c.PostForm("password")
-	//user.Photo = c.PostForm("photo")
-	file, err := c.FormFile("photo")
-	fmt.Println(file, err)
+	user.Photo = path
 
 	user.Prepare()
-
 	errorMessages := user.Validate("register")
 	if len(errorMessages) > 0 {
 		errList = errorMessages

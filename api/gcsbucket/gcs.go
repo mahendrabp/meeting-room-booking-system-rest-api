@@ -9,7 +9,6 @@ import (
 	"google.golang.org/appengine"
 	"io"
 	"log"
-	"net/http"
 	"net/url"
 	"os"
 )
@@ -19,7 +18,7 @@ var (
 )
 
 // HandleFileUploadToBucket uploads file to bucket
-func HandleFileUploadToBucket(c *gin.Context) {
+func HandleFileUploadToBucket(c *gin.Context) (string, error) {
 	var err error
 
 	err = godotenv.Load()
@@ -35,20 +34,12 @@ func HandleFileUploadToBucket(c *gin.Context) {
 
 	storageClient, err = storage.NewClient(ctx, option.WithCredentialsFile("keys.json"))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-			"error":   true,
-		})
-		return
+		return "", err
 	}
 
-	f, uploadedFile, err := c.Request.FormFile("file")
+	f, uploadedFile, err := c.Request.FormFile("photo")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-			"error":   true,
-		})
-		return
+		return "", nil
 	}
 
 	defer f.Close()
@@ -56,32 +47,18 @@ func HandleFileUploadToBucket(c *gin.Context) {
 	sw := storageClient.Bucket(bucket).Object(uploadedFile.Filename).NewWriter(ctx)
 
 	if _, err := io.Copy(sw, f); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-			"error":   true,
-		})
-		return
+		return "", err
 	}
 
 	if err := sw.Close(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-			"error":   true,
-		})
-		return
+		return "", nil
 	}
 
 	u, err := url.Parse("/" + bucket + "/" + sw.Attrs().Name)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-			"Error":   true,
-		})
-		return
+		return "", nil
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message":  "file uploaded successfully",
-		"pathname": u.EscapedPath(),
-	})
+	return u.EscapedPath(), nil
+
 }
