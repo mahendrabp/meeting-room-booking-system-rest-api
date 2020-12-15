@@ -56,7 +56,7 @@ func (r *Room) CreateRoom(db *gorm.DB) (*Room, error) {
 	return r, nil
 }
 
-func (r Room) FindAllRooms(db *gorm.DB) (*[]Room, error) {
+func (r *Room) FindAllRooms(db *gorm.DB) (*[]Room, error) {
 	var err error
 	rooms := []Room{}
 
@@ -66,4 +66,14 @@ func (r Room) FindAllRooms(db *gorm.DB) (*[]Room, error) {
 	}
 
 	return &rooms, nil
+}
+
+func (r *Room) FindRoomByID(db *gorm.DB, rid uint) (*Room, error) {
+	var err error
+	err = db.Debug().Model(&Room{}).Where("id = ?", rid).Take(&r).Error
+	if err != nil {
+		return &Room{}, err
+	}
+
+	return r, nil
 }

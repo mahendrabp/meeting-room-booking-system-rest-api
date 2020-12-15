@@ -7,6 +7,7 @@ import (
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/models"
 	"net/http"
+	"strconv"
 )
 
 func (server *Server) CreateRoom(c *gin.Context) {
@@ -71,5 +72,35 @@ func (server *Server) GetAvailableRoom(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":   http.StatusOK,
 		"response": rooms,
+	})
+}
+
+func (server *Server) GetRoom(c *gin.Context) {
+
+	roomID := c.Param("id")
+	rid, err := strconv.ParseUint(roomID, 10, 32)
+	if err != nil {
+		errList["Invalid_request"] = "Invalid Request"
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errList,
+		})
+		return
+	}
+	room := models.Room{}
+
+	roomReceived, err := room.FindRoomByID(server.DB, uint(rid))
+	if err != nil {
+		errList["No_room"] = "No Room Found"
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": http.StatusNotFound,
+			"error":  errList,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":   http.StatusOK,
+		"response": roomReceived,
 	})
 }
