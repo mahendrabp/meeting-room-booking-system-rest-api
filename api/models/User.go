@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
+	"time"
+)
 
 type User struct {
 	ID        uint       `gorm:"primary_key;auto_increment" json:"id"`
@@ -11,4 +14,13 @@ type User struct {
 	CreatedAt time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt *time.Time `gorm:"default:NULL" json:"-"`
+}
+
+func (u *User) BeforeSave() error {
+	hashedPassword, err := helpers.Hash(u.Password)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
+	return nil
 }
