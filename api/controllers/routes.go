@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/middlewares"
 	"net/http"
 )
 
@@ -15,7 +16,7 @@ func (server *Server) initializeRoutes() {
 		v1.POST("/register", server.CreateUser)
 		v1.POST("/login", server.Login)
 
-		v1.POST("/create-room", server.CreateRoom)
+		v1.POST("/create-room", middlewares.TokenAuthMiddleware("admin"), server.CreateRoom)
 		//v1.POST("/cloud-storage-bucket", gcsbucket.HandleFileUploadToBucket)
 	}
 }
