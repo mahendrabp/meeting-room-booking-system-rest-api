@@ -12,5 +12,6 @@ func (server *Server) initializeRoutes() {
 			c.JSON(http.StatusOK, "connect")
 		})
 
+		v1.POST("/register", server.CreateUser)
 	}
 }
