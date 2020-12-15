@@ -1,40 +1,48 @@
 package controllers
 
 import (
-	"encoding/json"
+	"fmt"
+	//"encoding/json"
+	//"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/models"
-	"io/ioutil"
+	//"io/ioutil"
 	"net/http"
 )
 
 func (server *Server) CreateUser(c *gin.Context) {
 
-	//clear previous error if any
 	errList = map[string]string{}
 
-	body, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		errList["Invalid_body"] = "Unable to get request"
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
-		return
-	}
+	//body, err := ioutil.ReadAll(c.Request.Body)
+	//fmt.Println(body, err, "ini raw")
+	//if err != nil {
+	//	errList["Invalid_body"] = "Unable to get request"
+	//	c.JSON(http.StatusUnprocessableEntity, gin.H{
+	//		"status": http.StatusUnprocessableEntity,
+	//		"error":  errList,
+	//	})
+	//	return
+	//}
 
 	user := models.User{}
 
-	err = json.Unmarshal(body, &user)
-	if err != nil {
-		errList["Unmarshal_error"] = "Cannot unmarshal body"
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  errList,
-		})
-		return
-	}
+	//err = json.Unmarshal(body, &user)
+	//if err != nil {
+	//	errList["Unmarshal_error"] = "Cannot unmarshal body"
+	//	c.JSON(http.StatusUnprocessableEntity, gin.H{
+	//		"status": http.StatusUnprocessableEntity,
+	//		"error":  errList,
+	//	})
+	//	return
+	//}
+
+	user.Email = c.PostForm("email")
+	user.Password = c.PostForm("password")
+	//user.Photo = c.PostForm("photo")
+	file, err := c.FormFile("photo")
+	fmt.Println(file, err)
 
 	user.Prepare()
 
