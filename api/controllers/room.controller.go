@@ -55,3 +55,21 @@ func (server *Server) CreateRoom(c *gin.Context) {
 		"response": roomCreated,
 	})
 }
+
+func (server *Server) GetAvailableRoom(c *gin.Context) {
+	room := models.Room{}
+
+	rooms, err := room.FindAllRooms(server.DB)
+	if err != nil {
+		errList["No_room"] = "No Room Found"
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": http.StatusNotFound,
+			"error":  errList,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":   http.StatusOK,
+		"response": rooms,
+	})
+}

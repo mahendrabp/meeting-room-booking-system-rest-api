@@ -17,6 +17,7 @@ func (server *Server) initializeRoutes() {
 		v1.POST("/login", server.Login)
 
 		v1.POST("/create-room", middlewares.TokenAuthMiddleware("admin"), server.CreateRoom)
-		//v1.POST("/cloud-storage-bucket", gcsbucket.HandleFileUploadToBucket)
+		v1.GET("/available-room", middlewares.TokenAuthMiddleware(""), server.GetAvailableRoom)
+
 	}
 }

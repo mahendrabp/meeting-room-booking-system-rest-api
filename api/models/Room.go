@@ -55,3 +55,15 @@ func (r *Room) CreateRoom(db *gorm.DB) (*Room, error) {
 
 	return r, nil
 }
+
+func (r Room) FindAllRooms(db *gorm.DB) (*[]Room, error) {
+	var err error
+	rooms := []Room{}
+
+	err = db.Debug().Model(&Room{}).Limit(100).Order("created_at desc").Find(&rooms).Error
+	if err != nil {
+		return &[]Room{}, err
+	}
+
+	return &rooms, nil
+}
