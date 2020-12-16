@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mahendrabp/meeting-room-booking-system-rest-api/auth"
+	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/auth"
 	"net/http"
 )
 

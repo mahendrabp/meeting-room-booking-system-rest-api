@@ -3,9 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/auth"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/models"
-	"github.com/mahendrabp/meeting-room-booking-system-rest-api/auth"
 	"golang.org/x/crypto/bcrypt"
 
 	//"golang.org/x/crypto/bcrypt"

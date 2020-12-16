@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/auth"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
+	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/mail"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/models"
-	"github.com/mahendrabp/meeting-room-booking-system-rest-api/auth"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -107,4 +108,7 @@ func (server *Server) CreateBooking(c *gin.Context) {
 		"status":   http.StatusCreated,
 		"response": bookingCreated,
 	})
+
+	mail.SendMail("chipxitro@gmail.com", "booking")
+	//mail.SendMail2()
 }

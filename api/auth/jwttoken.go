@@ -98,7 +98,7 @@ func ExtractTokenID(r *http.Request) (uint, error) {
 	return 0, nil
 }
 
-//pretty display the claims licely in the terminal
+//pretty display the claims slice in the terminal
 func pretty(data interface{}) {
 	b, err := json.MarshalIndent(data, "", " ")
 	if err != nil {
