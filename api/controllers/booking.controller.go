@@ -43,18 +43,6 @@ func (server *Server) CreateBooking(c *gin.Context) {
 
 	fmt.Println(uid)
 
-	// check if the room is available:
-	//room := models.Room{}
-	//err = server.DB.Debug().Model(models.Room{}).Where("id = ?", rid).Take(&room).Error
-	//if err != nil {
-	//	errList["Unauthorized"] = "Unauthorized"
-	//	c.JSON(http.StatusUnauthorized, gin.H{
-	//		"status": http.StatusUnauthorized,
-	//		"error":  errList,
-	//	})
-	//	return
-	//}
-
 	body, err := ioutil.ReadAll(c.Request.Body)
 	fmt.Println(body)
 	if err != nil {
@@ -77,7 +65,19 @@ func (server *Server) CreateBooking(c *gin.Context) {
 		return
 	}
 
-	// enter the userid and the roomid. The comment body is automatically passed
+	// check if the room is available or not
+	isRoomAvailable := booking.GetAvailabilityRoom(server.DB, booking)
+	fmt.Println(isRoomAvailable)
+
+	if !isRoomAvailable {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  "room not available",
+		})
+		return
+	}
+
+	//enter the userid and the roomid. The comment body is automatically passed
 	booking.UserID = uid
 	booking.RoomID = uint(rid)
 
