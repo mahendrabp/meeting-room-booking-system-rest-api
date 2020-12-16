@@ -7,7 +7,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 )
 
 //CreateToken: create jwt token
@@ -17,6 +19,7 @@ func CreateToken(id uint, role string) (string, error) {
 	claims["authorized"] = true
 	claims["id"] = id
 	claims["role"] = role
+	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	fmt.Println(os.Getenv("API_SECRET"), "ssst this is a secret")
 	return token.SignedString([]byte(os.Getenv("API_SECRET")))
@@ -71,6 +74,28 @@ func ExtractTokenRole(r *http.Request) (string, error) {
 		return role, nil
 	}
 	return "", nil
+}
+
+func ExtractTokenID(r *http.Request) (uint, error) {
+	tokenString := extractToken(r)
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(os.Getenv("API_SECRET")), nil
+	})
+	if err != nil {
+		return 0, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok && token.Valid {
+		uid, err := strconv.ParseUint(fmt.Sprintf("%.0f", claims["id"]), 10, 32)
+		if err != nil {
+			return 0, err
+		}
+		return uint(uid), nil
+	}
+	return 0, nil
 }
 
 //pretty display the claims licely in the terminal

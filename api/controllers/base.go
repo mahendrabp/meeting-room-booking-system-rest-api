@@ -37,6 +37,10 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 	}
 
 	//database migration
+	if isExist := server.DB.HasTable("bookings"); isExist != true {
+		server.DB.Debug().AutoMigrate(&models.Booking{})
+	}
+
 	server.DB.Debug().AutoMigrate(
 		&models.User{},
 		&models.Room{},
