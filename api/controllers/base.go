@@ -38,13 +38,14 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 
 	//database migration
 	if isExist := server.DB.HasTable("bookings"); isExist != true {
-		server.DB.Debug().AutoMigrate(&models.Booking{})
+		server.DB.Debug().AutoMigrate(
+			&models.User{},
+			&models.Room{},
+			&models.Booking{})
 	}
 
-	server.DB.Debug().AutoMigrate(
-		&models.User{},
-		&models.Room{},
-	)
+	server.DB.Model(&models.Booking{}).AddForeignKey("room_id", "rooms(id)", "RESTRICT", "RESTRICT").
+		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
 
 	server.Router = gin.Default()
 	server.Router.Use(middlewares.CORSMiddleware())

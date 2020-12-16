@@ -13,7 +13,7 @@ func (server *Server) initializeRoutes() {
 			c.JSON(http.StatusOK, "connect")
 		})
 
-		v1.POST("/register", server.CreateUser)
+		v1.POST("/register", server.Register)
 		v1.POST("/login", server.Login)
 
 		v1.POST("/create-room", middlewares.TokenAuthMiddleware("admin"), server.CreateRoom)

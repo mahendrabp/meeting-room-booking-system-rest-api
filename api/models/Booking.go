@@ -9,10 +9,10 @@ import (
 
 type Booking struct {
 	ID           uint       `gorm:"primary_key;auto_increment" json:"id"`
-	User         User       `json:"user"`
-	UserID       uint       `gorm:"not null" json:"user_id"`
-	Room         Room       `json:"room"`
-	RoomID       uint       `gorm:"not null" json:"room_id"`
+	UserID       uint       `gorm:"not null;" json:"user_id"`
+	User         User       `gorm:"foreignKey:UserID" json:"user"`
+	RoomID       uint       `gorm:";not null" json:"room_id"`
+	Room         Room       `gorm:"foreignKey:RoomID" json:"room"`
 	TotalPerson  uint       `gorm:"not null" json:"total_person"`
 	BookingTime  time.Time  `gorm:"not null" json:"booking_time"`
 	Noted        string     `gorm:"size:255" json:"noted"`
