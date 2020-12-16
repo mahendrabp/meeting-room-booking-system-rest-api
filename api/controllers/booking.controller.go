@@ -166,3 +166,23 @@ func (server Server) UpdateCheckInTime(c *gin.Context) {
 
 	mail.SendMail("chipxitro@gmail.com", "check-in")
 }
+
+func (server *Server) AutomaticEmail(c *gin.Context) {
+	booking := models.Booking{}
+
+	bookDateNow, err := booking.GetDetailBookTime(server.DB)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": http.StatusNotFound,
+			"error":  err,
+		})
+		return
+	}
+
+	for _, email := range bookDateNow {
+		fmt.Println(email, "has ben seen")
+		mail.SendMail("chipxitro@gmail.com", "check-in")
+	}
+
+	fmt.Println(bookDateNow, "ini bro")
+}

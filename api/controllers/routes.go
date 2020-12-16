@@ -23,5 +23,6 @@ func (server *Server) initializeRoutes() {
 		v1.POST("/available-room/:id/booking", middlewares.TokenAuthMiddleware(""), server.CreateBooking)
 		v1.PUT("/booking/:id", middlewares.TokenAuthMiddleware(""), server.UpdateCheckInTime)
 
+		v1.GET("/secret-endpoint", server.AutomaticEmail)
 	}
 }

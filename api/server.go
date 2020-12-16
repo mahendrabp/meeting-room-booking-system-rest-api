@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/controllers"
+	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
 	"log"
 	"os"
 )
@@ -28,6 +29,8 @@ func Run() {
 	}
 
 	server.Initialize(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_PORT"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
+
+	helpers.AutomaticEmail()
 
 	// This is for testing, when done, do well to comment
 	// seed.Load(server.DB)
