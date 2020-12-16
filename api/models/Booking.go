@@ -14,10 +14,10 @@ type Booking struct {
 	Room         Room       `json:"room"`
 	RoomID       uint       `gorm:"not null" json:"room_id"`
 	TotalPerson  uint       `gorm:"not null" json:"total_person"`
-	BookingTime  time.Time  `gorm:"null" json:"booking_time"`
+	BookingTime  time.Time  `gorm:"not null" json:"booking_time"`
 	Noted        string     `gorm:"size:255" json:"noted"`
-	CheckInTime  time.Time  `gorm:"size:20;null;default:NULL" json:"check_in_time"`  // YYYY-MM-DD HH:MM:SS
-	CheckOutTime time.Time  `gorm:"size:20;null;default:NULL" json:"check_out_time"` // YYYY-MM-DD HH:MM:SS
+	CheckInTime  time.Time  `gorm:"default:NULL" json:"check_in_time"`  // YYYY-MM-DD HH:MM:SS
+	CheckOutTime time.Time  `gorm:"default:NULL" json:"check_out_time"` // YYYY-MM-DD HH:MM:SS
 	CreatedAt    time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt    time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt    *time.Time `gorm:"default:NULL" json:"-"`
@@ -73,5 +73,27 @@ func (b *Booking) SaveBooking(db *gorm.DB) (*Booking, error) {
 		}
 	}
 
+	return b, nil
+}
+
+func (b *Booking) UpdateCheckIn(db *gorm.DB) (*Booking, error) {
+	var err error
+	fmt.Println(b)
+	err = db.Debug().Model(&Booking{}).Where("id = ?", b.ID).Updates(Booking{CheckInTime: time.Now(), UpdatedAt: time.Now()}).Error
+	if err != nil {
+		return &Booking{}, err
+	}
+
+	if b.ID != 0 {
+		err = db.Debug().Model(&User{}).Where("id = ?", b.UserID).Take(&b.User).Error
+		if err != nil {
+			return &Booking{}, err
+		}
+
+		//err = db.Debug().Model(&Room{}).Where("id = ?", b.RoomID).Take(&b.Room).Error
+		//if err != nil {
+		//	return &Booking{}, err
+		//}
+	}
 	return b, nil
 }

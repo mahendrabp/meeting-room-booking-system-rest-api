@@ -112,3 +112,57 @@ func (server *Server) CreateBooking(c *gin.Context) {
 	mail.SendMail("chipxitro@gmail.com", "booking")
 	//mail.SendMail2()
 }
+
+func (server Server) UpdateCheckInTime(c *gin.Context) {
+	errList = map[string]string{}
+
+	bookingID := c.Param("id")
+	bid, err := strconv.ParseUint(bookingID, 10, 64)
+	if err != nil {
+		errList["Invalid_request"] = "Invalid Request"
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errList,
+		})
+		return
+	}
+	fmt.Println(uint(bid))
+
+	// check the token
+	uid, err := auth.ExtractTokenID(c.Request)
+	if err != nil {
+		errList["Unauthorized"] = "Unauthorized"
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status": http.StatusUnauthorized,
+			"error":  errList,
+		})
+		return
+	}
+
+	fmt.Println(uid)
+
+	booking := models.Booking{}
+
+	booking.ID = uint(bid)
+	booking.UserID = uid
+
+	updateCheckIn, err := booking.UpdateCheckIn(server.DB)
+	if err != nil {
+		formattedError := helpers.FormatError(err.Error())
+		errList = formattedError
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": http.StatusNotFound,
+			"error":  errList,
+		})
+		return
+	}
+
+	fmt.Println(updateCheckIn.User.Email)
+
+	c.JSON(http.StatusCreated, gin.H{
+		"status":   http.StatusCreated,
+		"response": "terimakasih ,anda sudah check in",
+	})
+
+	mail.SendMail("chipxitro@gmail.com", "check-in")
+}
