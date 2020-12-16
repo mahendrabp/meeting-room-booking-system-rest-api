@@ -58,9 +58,32 @@ func (r *Room) CreateRoom(db *gorm.DB) (*Room, error) {
 
 func (r *Room) FindAllRooms(db *gorm.DB) (*[]Room, error) {
 	var err error
-	rooms := []Room{}
+	var rooms []Room
+	var bookings []Booking
+	var roomId []uint
 
-	err = db.Debug().Model(&Room{}).Limit(100).Order("created_at desc").Find(&rooms).Error
+	//select room_id from bookings where booking_time today and check_out_time is null
+
+	dt := time.Now()
+
+	startDtFormatted := dt.Format("2006-01-02 00:00:00")
+	endDtFormatted := dt.Format("2006-01-02") + " 23:59:59"
+
+	err = db.Debug().Model(&Booking{}).
+		Where("booking_time BETWEEN ? AND ?", startDtFormatted, endDtFormatted).
+		Where("check_out_time is null").
+		Find(&bookings).Error
+
+	for _, b := range bookings {
+		roomId = append(roomId, b.RoomID)
+	}
+
+	err = db.Debug().Not(roomId).Model(&Room{}).Limit(100).Order("created_at desc").Find(&rooms).Error
+
+	//err = db.Model(&Room{}).Select("rooms.id, rooms.room_name, rooms.photo").Scan(&result{}).Error
+	//
+	//fmt.Println(result{})
+
 	if err != nil {
 		return &[]Room{}, err
 	}

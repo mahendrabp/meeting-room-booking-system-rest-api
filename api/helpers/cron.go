@@ -17,8 +17,7 @@ func AutomaticEmail() {
 			fmt.Println(string(data))
 		}
 	}
-	//scheduler.Every(2).Seconds().Run(job)
-	//scheduler.Every().Day().Run(job)
+
 	scheduler.Every().Day().At("06:30").Run(job)
 
 }
