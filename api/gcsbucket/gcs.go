@@ -2,13 +2,10 @@ package gcsbucket
 
 import (
 	"cloud.google.com/go/storage"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"google.golang.org/api/option"
 	"google.golang.org/appengine"
 	"io"
-	"log"
 	"net/url"
 	"os"
 )
@@ -21,12 +18,12 @@ var (
 func HandleFileUploadToBucket(c *gin.Context) (string, error) {
 	var err error
 
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error getting env, %v", err)
-	} else {
-		fmt.Println("We are getting values")
-	}
+	//err = godotenv.Load()
+	//if err != nil {
+	//	log.Fatalf("Error getting env, %v", err)
+	//} else {
+	//	fmt.Println("We are getting values")
+	//}
 
 	bucket := os.Getenv("BUCKET_NAME")
 

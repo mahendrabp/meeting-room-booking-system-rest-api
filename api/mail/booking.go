@@ -2,8 +2,8 @@ package mail
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
-	"log"
+	_ "github.com/joho/godotenv/autoload"
+	//"log"
 	"net/smtp"
 	"os"
 )
@@ -20,12 +20,12 @@ func (s *smtpServer) Address() string {
 
 func SendMail(emailUser, section string) {
 	var err error
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error getting env, %v", err)
-	} else {
-		fmt.Println("We are getting values")
-	}
+	//err = godotenv.Load()
+	//if err != nil {
+	//	log.Fatalf("Error getting env, %v", err)
+	//} else {
+	//	fmt.Println("We are getting values")
+	//}
 
 	fmt.Println(os.Getenv("PASSWORD_EMAIL"))
 	// Sender data.
