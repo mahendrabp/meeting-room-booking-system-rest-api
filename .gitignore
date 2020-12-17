@@ -7,3 +7,4 @@ meeting-room-booking-system-rest-api # Dont push the local binary
 .idea
 tmp
 *.json
+bin

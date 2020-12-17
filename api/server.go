@@ -5,7 +5,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/controllers"
 	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/helpers"
-	"github.com/mahendrabp/meeting-room-booking-system-rest-api/api/seeder"
 	"log"
 	"os"
 )
@@ -34,7 +33,7 @@ func Run() {
 	helpers.AutomaticEmail()
 
 	// This is for testing, when done, do well to comment
-	seeder.Load(server.DB)
+	//seeder.Load(server.DB)
 
 	apiPort := fmt.Sprintf(":%s", os.Getenv("API_PORT"))
 	fmt.Printf("Listening to port %s", apiPort)
