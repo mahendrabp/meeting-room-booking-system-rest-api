@@ -2,12 +2,14 @@ package gcsbucket
 
 import (
 	"cloud.google.com/go/storage"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/option"
 	"google.golang.org/appengine"
 	"io"
 	"net/url"
 	"os"
+	"path/filepath"
 )
 
 var (
@@ -17,13 +19,6 @@ var (
 // HandleFileUploadToBucket uploads file to bucket
 func HandleFileUploadToBucket(c *gin.Context) (string, error) {
 	var err error
-
-	//err = godotenv.Load()
-	//if err != nil {
-	//	log.Fatalf("Error getting env, %v", err)
-	//} else {
-	//	fmt.Println("We are getting values")
-	//}
 
 	bucket := os.Getenv("BUCKET_NAME")
 
@@ -36,7 +31,13 @@ func HandleFileUploadToBucket(c *gin.Context) (string, error) {
 
 	f, uploadedFile, err := c.Request.FormFile("photo")
 	if err != nil {
-		return "", nil
+		return "", err
+	}
+
+	fileExtension := filepath.Ext(uploadedFile.Filename)
+
+	if fileExtension != ".png" || fileExtension != ".jpeg" || fileExtension != ".jpg" {
+		return "", errors.New("silahkan upload dengan ekstensi png/jpg/jpeg")
 	}
 
 	defer f.Close()
@@ -48,12 +49,12 @@ func HandleFileUploadToBucket(c *gin.Context) (string, error) {
 	}
 
 	if err := sw.Close(); err != nil {
-		return "", nil
+		return "", err
 	}
 
 	u, err := url.Parse("/" + bucket + "/" + sw.Attrs().Name)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	return u.EscapedPath(), nil

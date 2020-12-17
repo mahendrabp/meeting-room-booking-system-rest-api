@@ -16,21 +16,9 @@ import (
 func (server *Server) Register(c *gin.Context) {
 	errList = map[string]string{}
 
-	path, err := gcsbucket.HandleFileUploadToBucket(c)
-	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"status": http.StatusUnprocessableEntity,
-			"error":  err,
-		})
-		return
-	}
-
-	fmt.Println(path)
-
 	user := models.User{}
 	user.Email = c.PostForm("email")
 	user.Password = c.PostForm("password")
-	user.Photo = path
 
 	user.Prepare()
 	errorMessages := user.Validate("register")
@@ -42,6 +30,19 @@ func (server *Server) Register(c *gin.Context) {
 		})
 		return
 	}
+
+	path, err := gcsbucket.HandleFileUploadToBucket(c)
+
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	fmt.Println(path)
+	user.Photo = path
 
 	userCreated, err := user.SaveUser(server.DB)
 	if err != nil {
