@@ -6,7 +6,7 @@ import (
 
 var errorMessages = make(map[string]string)
 
-var err error
+//var err error
 
 func FormatError(errString string) map[string]string {
 
@@ -19,11 +19,11 @@ func FormatError(errString string) map[string]string {
 	}
 
 	if strings.Contains(errString, "record not found") {
-		errorMessages["No_record"] = "Email not Found"
+		errorMessages["No_record"] = "Not Found"
 	}
 
 	if strings.Contains(errString, "hashedPassword") {
-		errorMessages["Incorrect_password"] = "Incorrect Password"
+		errorMessages["Incorrect_password"] = "Incorrect Password or Email"
 	}
 
 	if len(errorMessages) > 0 {

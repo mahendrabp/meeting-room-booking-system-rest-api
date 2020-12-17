@@ -109,8 +109,9 @@ func (server *Server) CreateBooking(c *gin.Context) {
 		"response": bookingCreated,
 	})
 
-	mail.SendMail("chipxitro@gmail.com", "booking")
-	//mail.SendMail2()
+	//mail.SendMail("chipxitro@gmail.com", "booking")
+	mail.SendMailWithMailTrap(booking.User.Email, "booking")
+
 }
 
 func (server Server) UpdateCheckInTime(c *gin.Context) {
@@ -164,7 +165,9 @@ func (server Server) UpdateCheckInTime(c *gin.Context) {
 		"response": "terimakasih ,anda sudah check in",
 	})
 
-	mail.SendMail("chipxitro@gmail.com", "check-in")
+	//mail.SendMail("chipxitro@gmail.com", "check-in")
+	mail.SendMailWithMailTrap(booking.User.Email, "check-in")
+
 }
 
 func (server *Server) AutomaticEmail(c *gin.Context) {
@@ -181,7 +184,8 @@ func (server *Server) AutomaticEmail(c *gin.Context) {
 
 	for _, email := range bookDateNow {
 		fmt.Println(email, "has ben seen")
-		mail.SendMail("chipxitro@gmail.com", "check-in")
+		//mail.SendMail(email, "check-in")
+		mail.SendMailWithMailTrap(email, "reminder")
 	}
 
 	fmt.Println(bookDateNow, "ini bro")
