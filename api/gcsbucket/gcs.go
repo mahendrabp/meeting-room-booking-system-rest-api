@@ -29,7 +29,7 @@ func HandleFileUploadToBucket(c *gin.Context) (string, error) {
 
 	ctx := appengine.NewContext(c.Request)
 
-	storageClient, err = storage.NewClient(ctx, option.WithCredentialsFile("keys.json"))
+	storageClient, err = storage.NewClient(ctx, option.WithCredentialsFile("google-credentials.json"))
 	if err != nil {
 		return "", err
 	}
