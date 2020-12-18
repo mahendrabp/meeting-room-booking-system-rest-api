@@ -109,7 +109,7 @@ func (server *Server) CreateBooking(c *gin.Context) {
 		"response": bookingCreated,
 	})
 
-	mail.SendMail(booking.User.Email, "booking")
+	mail.SendMail(bookingCreated, "booking")
 	//mail.SendMailWithMailTrap(booking.User.Email, "booking")
 
 }
@@ -165,7 +165,7 @@ func (server Server) UpdateCheckInTime(c *gin.Context) {
 		"response": "terimakasih ,anda sudah check in",
 	})
 
-	mail.SendMail(booking.User.Email, "check-in")
+	mail.SendMail(updateCheckIn, "check-in")
 	//mail.SendMailWithMailTrap(booking.User.Email, "check-in")
 
 }
@@ -184,7 +184,7 @@ func (server *Server) AutomaticEmail(c *gin.Context) {
 
 	for _, email := range bookDateNow {
 		fmt.Println(email, "has ben seen")
-		mail.SendMail(email, "reminder")
+		//mail.SendMail(email, "reminder")
 		//mail.SendMailWithMailTrap(email, "reminder")
 	}
 
