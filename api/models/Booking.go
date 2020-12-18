@@ -115,11 +115,11 @@ func (b *Booking) UpdateCheckIn(db *gorm.DB) (*Booking, error) {
 	return b, nil
 }
 
-func (b *Booking) GetDetailBookTime(db *gorm.DB) ([]string, error) {
+func (b *Booking) GetDetailBookTime(db *gorm.DB) ([]Booking, error) {
 
 	var bookings []Booking
-	var userId []uint
-	var emailUser []User
+	//var userId []uint
+	//var emailUser []User
 
 	dt := time.Now()
 
@@ -129,22 +129,15 @@ func (b *Booking) GetDetailBookTime(db *gorm.DB) ([]string, error) {
 	err := db.Debug().Model(&Booking{}).
 		Where("booking_time BETWEEN ? AND ?", startDtFormatted, endDtFormatted).
 		Where("check_out_time is null").
-		Find(&bookings).Error
+		Preload("User").
+		Preload("Room").
+		Find(&bookings).
+		Error
 
+	fmt.Println(err)
 	if err != nil {
-		return []string{}, err
+		return []Booking{}, err
 	}
 
-	for _, u := range bookings {
-		userId = append(userId, u.UserID)
-	}
-
-	db.Model(&User{}).Find(&emailUser, userId)
-
-	var email []string
-	for _, uid := range emailUser {
-		email = append(email, uid.Email)
-	}
-
-	return email, nil
+	return bookings, nil
 }

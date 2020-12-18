@@ -182,11 +182,11 @@ func (server *Server) AutomaticEmail(c *gin.Context) {
 		return
 	}
 
-	for _, email := range bookDateNow {
-		fmt.Println(email, "has ben seen")
-		//mail.SendMail(email, "reminder")
+	for _, data := range bookDateNow {
+		fmt.Println(data.User.Email, "has ben seen")
+		mail.SendMail(&data, "reminder")
 		//mail.SendMailWithMailTrap(email, "reminder")
 	}
 
-	fmt.Println(bookDateNow)
+	//fmt.Println(bookDateNow)
 }
