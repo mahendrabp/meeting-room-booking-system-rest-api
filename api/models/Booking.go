@@ -52,7 +52,7 @@ func (b *Booking) RoomCapacity(db *gorm.DB) (bool, uint) {
 	return true, convert
 }
 
-func (b *Booking) GetAvailabilityRoom(db *gorm.DB, booking Booking) bool {
+func (b *Booking) GetAvailabilityRoom(db *gorm.DB, booking Booking, rid uint) bool {
 	//var bookings []Booking
 
 	startDtFormatted := booking.BookingTime.Format("2006-01-02 00:00:00")
@@ -60,8 +60,12 @@ func (b *Booking) GetAvailabilityRoom(db *gorm.DB, booking Booking) bool {
 	count := 0
 	err := db.Debug().Model(&Booking{}).
 		Where("booking_time BETWEEN ? AND ?", startDtFormatted, endDtFormatted).
+		Where("room_id = ?", rid).
 		Where("check_out_time is null").
 		Count(&count).Error
+
+	fmt.Println(count)
+	fmt.Println(err)
 
 	if err != nil {
 		return false

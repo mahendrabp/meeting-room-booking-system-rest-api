@@ -66,7 +66,7 @@ func (server *Server) CreateBooking(c *gin.Context) {
 	}
 
 	// check if the room is available or not
-	isRoomAvailable := booking.GetAvailabilityRoom(server.DB, booking)
+	isRoomAvailable := booking.GetAvailabilityRoom(server.DB, booking, uint(rid))
 	fmt.Println(isRoomAvailable)
 
 	if !isRoomAvailable {
