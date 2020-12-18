@@ -36,7 +36,7 @@ func HandleFileUploadToBucket(c *gin.Context) (string, error) {
 
 	fileExtension := filepath.Ext(uploadedFile.Filename)
 
-	if fileExtension != ".png" || fileExtension != ".jpeg" || fileExtension != ".jpg" {
+	if fileExtension != ".png" && fileExtension != ".jpg" && fileExtension != ".jpeg" {
 		return "", errors.New("silahkan upload dengan ekstensi png/jpg/jpeg")
 	}
 

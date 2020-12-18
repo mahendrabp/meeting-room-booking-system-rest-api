@@ -109,7 +109,7 @@ func (server *Server) CreateBooking(c *gin.Context) {
 		"response": bookingCreated,
 	})
 
-	//mail.SendMail("chipxitro@gmail.com", "booking")
+	mail.SendMail(booking.User.Email, "booking")
 	mail.SendMailWithMailTrap(booking.User.Email, "booking")
 
 }
